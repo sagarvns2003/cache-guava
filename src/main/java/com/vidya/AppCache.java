@@ -24,6 +24,7 @@ public class AppCache {
 		employee = app.employeeService.getEmployee("102");
 		employee = app.employeeService.getEmployee("103");
 		employee = app.employeeService.getEmployee("104");
+		employee = app.employeeService.getEmployee("105");
 		
 		cacheStats = app.employeeService.getCacheStats();
 		System.out.println(cacheStats.toString());
@@ -31,11 +32,12 @@ public class AppCache {
 		employee = app.employeeService.getEmployee("100");
 		employee = app.employeeService.getEmployee("104");
 		employee = app.employeeService.getEmployee("100");
-
+		employee = app.employeeService.getEmployee("106");
 		
 		cacheStats = app.employeeService.getCacheStats();
 		System.out.println(cacheStats.toString());
 
+		System.out.println("Cache Data: " + app.employeeService.getEmployeeCache().asMap().toString());
 	}
 
 }
