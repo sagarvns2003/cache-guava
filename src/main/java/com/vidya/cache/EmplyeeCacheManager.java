@@ -1,9 +1,13 @@
 package com.vidya.cache;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -18,6 +22,7 @@ public class EmplyeeCacheManager {
 	
 	private static LoadingCache<String, Optional<Employee>> employeeCache = CacheBuilder.newBuilder()
 			.maximumSize(1000)
+			.refreshAfterWrite(1, TimeUnit.MINUTES)
 			.expireAfterAccess(24, TimeUnit.HOURS)
 			.recordStats()
 			.build(new CacheLoader<String, Optional<Employee>>() {
@@ -28,7 +33,12 @@ public class EmplyeeCacheManager {
 				}
 			});
 
-
+    public static void preloadEmployeeCache() {
+    	List<Employee> employees = employeeDAO.getEmployees();
+    	Map<String, Optional<Employee>> emplMap = employees.stream()
+    			.collect(Collectors.toMap(Employee::getId, emp -> Optional.ofNullable(emp)));
+    	employeeCache.putAll(emplMap);
+    }
 	
 	public static Optional<Employee> getEmployee(String employeeID) throws IOException, ExecutionException {
 		Optional<Employee> employee = employeeCache.get(employeeID);
